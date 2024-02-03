@@ -1,0 +1,14 @@
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.GeneratedMSBuildEditorConfig.editorconfig
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.AssemblyInfoInputs.cache
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.AssemblyInfo.cs
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.csproj.CoreCompileInputs.cache
+D:\Document\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.exe
+D:\Document\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.deps.json
+D:\Document\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.runtimeconfig.json
+D:\Document\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.dll
+D:\Document\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.pdb
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.dll
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\refint\SqlQueryFileList.dll
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.pdb
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.genruntimeconfig.cache
+D:\Document\SqlQueryFileList\obj\Debug\net8.0\ref\SqlQueryFileList.dll

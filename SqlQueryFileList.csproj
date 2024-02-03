@@ -1,13 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup>
-    <NoWarn>CS8600;IDE0028;</NoWarn>
-  </PropertyGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup>
+        <NoWarn>CS8600;IDE0028;IDE0305;CA1861;IDE0003</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="Program.cs" />
+        <Content Include="SqlQueryFileList.sln" />
+        <Content Include=".vscode\launch.json" />
+        <Content Include="SqlQueryFileList.cs" />
+        <Content Include="ColumnEnum.cs" />
+    </ItemGroup>
 </Project>

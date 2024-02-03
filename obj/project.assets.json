@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Document\\SqlQueryFileList\\SqlQueryFileList.csproj",
+      "projectUniqueName": "H:\\C#Git\\SqlQueryFileList\\SqlQueryFileList.csproj",
       "projectName": "SqlQueryFileList",
-      "projectPath": "D:\\Document\\SqlQueryFileList\\SqlQueryFileList.csproj",
+      "projectPath": "H:\\C#Git\\SqlQueryFileList\\SqlQueryFileList.csproj",
       "packagesPath": "C:\\Users\\arech\\.nuget\\packages\\",
-      "outputPath": "D:\\Document\\SqlQueryFileList\\obj\\",
+      "outputPath": "H:\\C#Git\\SqlQueryFileList\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\arech\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -59,7 +59,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

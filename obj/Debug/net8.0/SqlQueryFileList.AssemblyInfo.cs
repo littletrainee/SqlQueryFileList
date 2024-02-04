@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SqlQueryFileList")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d47163f3f11857031abcbc726d7e278fe6825e1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SqlQueryFileList")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SqlQueryFileList")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

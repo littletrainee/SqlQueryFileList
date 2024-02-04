@@ -1,0 +1,4 @@
+H:\C#Git\SqlQueryFileList\bin\Release\net8.0\publish\SqlQueryFileList.exe
+H:\C#Git\SqlQueryFileList\bin\Release\net8.0\publish\SqlQueryFileList.dll
+H:\C#Git\SqlQueryFileList\bin\Release\net8.0\publish\SqlQueryFileList.deps.json
+H:\C#Git\SqlQueryFileList\bin\Release\net8.0\publish\SqlQueryFileList.runtimeconfig.json

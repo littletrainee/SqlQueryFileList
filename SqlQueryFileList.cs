@@ -20,18 +20,21 @@ namespace SqlQueryFileList
         private int FileLastWriteTimeLength { get; set; }
         private int ExtensionLength { get; set; }
         private ColumnEnum LikeColumn { get; set; }
-        private Like Like { get; set; }
+        private bool Vague { get; set; }
         private string LikeString { get; set; }
         public SqlQueryFileList(string[] args)
         {
             //! 串聯傳入的參數並以空格區隔
-            //! 初步階段四個欄位
-            //! NAME
-            //! SIZE
-            //! FILE_LAST_WRITE_TIME
-            //! EXTENSION
-            this.QueryStatement = string.Join(' ', args)
-            .Replace("*", "NAME,SIZE,FILE_LAST_WRITE_TIME,EXTENSION")
+            string temp = string.Join(' ', args);
+            //! Path Start index
+            if (!temp.Contains("FROM .", StringComparison.CurrentCultureIgnoreCase))
+            {
+                int Fromstart = temp.IndexOf("FROM '", StringComparison.CurrentCultureIgnoreCase) + 5;
+                int FromEnd = temp.IndexOf("'", Fromstart + 1, StringComparison.CurrentCultureIgnoreCase);
+                this.TargetDirectory = temp.Substring(Fromstart + 1, FromEnd - Fromstart - 1);
+                temp = string.Concat(temp.AsSpan(0, Fromstart), ".", temp.AsSpan(FromEnd + 1));
+            }
+            this.QueryStatement = temp.Replace("*", "NAME,SIZE,FILE_LAST_WRITE_TIME,EXTENSION")
             .Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             this.ParseQueryStatement();
@@ -43,13 +46,16 @@ namespace SqlQueryFileList
         }
         private void VagueSearch()
         {
-            if (this.Like != Like.NONE)
+            if (this.Vague)
             {
                 this.FileInfoList = this.FileInfoList.Where(
+//! 多個模糊配對
 x => x.Name.Where((_, index) =>
-this.LikeString.SkipWhile((p, pIndex) =>
-    p == '%' || (pIndex + index < x.Name.Length && p == x.Name[index + pIndex])).All(p => p == '%')).Any()
+    this.LikeString.SkipWhile((p, pIndex) => p == '%' || (pIndex + index < x.Name.Length && p == x.Name[index + pIndex]))
+    .All(p => p == '%')).Any()
+//! 前半段模糊
 || this.LikeString.StartsWith('%') && x.Name.EndsWith(this.LikeString.Substring(1))
+//! 後半段模糊
 || this.LikeString.EndsWith('%') && x.Name.StartsWith(this.LikeString.Substring(0, this.LikeString.Length - 1))
                           ).Select(x => x).ToList();
             }
@@ -59,7 +65,7 @@ this.LikeString.SkipWhile((p, pIndex) =>
         {
             this.NameLength = this.FileInfoList.OrderByDescending(x => x.Name.Length).First().Name.Length;
             this.SizeLength = this.FileInfoList.OrderByDescending(x => x.Length).First().Length.ToString().Length;
-            this.FileLastWriteTimeLength = 20;
+            this.FileLastWriteTimeLength = 26;
             int temp = this.FileInfoList.OrderByDescending(x => x.Extension.Length).First().Extension.Length;
             this.ExtensionLength = temp > 9 ? temp : 9;
         }
@@ -89,7 +95,7 @@ this.LikeString.SkipWhile((p, pIndex) =>
                     {
                         ColumnEnum.NAME => this.FileInfoList[i].Name.PadLeft(this.NameLength, ' '),
                         ColumnEnum.SIZE => this.FileInfoList[i].Length.ToString().PadLeft(this.SizeLength, ' '),
-                        ColumnEnum.FILE_LAST_WRITE_TIME => this.FileInfoList[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss").PadLeft(this.FileLastWriteTimeLength, ' '),
+                        ColumnEnum.FILE_LAST_WRITE_TIME => this.FileInfoList[i].LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss.ffffff").PadLeft(this.FileLastWriteTimeLength, ' '),
                         ColumnEnum.EXTENSION => this.FileInfoList[i].Extension.PadLeft(this.ExtensionLength, ' '),
                         _ => string.Empty
                     } + (j < ColumnEnums.Count - 1 ? "|" : string.Empty);
@@ -179,7 +185,13 @@ this.LikeString.SkipWhile((p, pIndex) =>
                     case Block.FROM:
                         if (this.QueryStatement[i] == ".")
                         {
-                            this.TargetDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                            if (this.TargetDirectory is null)
+                            {
+                                string location = Assembly.GetExecutingAssembly().Location;
+                                this.TargetDirectory = Path.GetDirectoryName(location);
+                                // this.TargetDirectory = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+                                Console.WriteLine(this.TargetDirectory);
+                            }
                         }
                         else if (this.QueryStatement[i].Equals("WHERE", StringComparison.CurrentCultureIgnoreCase))
                         {
@@ -200,7 +212,7 @@ this.LikeString.SkipWhile((p, pIndex) =>
                             {
                                 string targetString = this.QueryStatement[i + 3].Replace("'", string.Empty);
 
-                                this.Like = Like.START;
+                                this.Vague = true;
                                 this.LikeString = targetString;
                                 if (this.QueryStatement[i + 1].Equals("NAME", StringComparison.CurrentCultureIgnoreCase))
                                 {

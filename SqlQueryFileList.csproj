@@ -5,9 +5,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <DebugType>embedded</DebugType>
+        <nologo />
+        <norestore />
     </PropertyGroup>
     <PropertyGroup>
-        <NoWarn>CS8600;IDE0028;IDE0305;CA1861;IDE0003;IDE0300</NoWarn>
+        <NoWarn>CS8600;IDE0028;IDE0305;CA1861;IDE0003;IDE0300;IDE0074</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="Program.cs" />
@@ -17,5 +20,6 @@
         <Content Include="ColumnEnum.cs" />
         <Content Include="Block.cs" />
         <Content Include="Like.cs" />
+        <Content Include="README.md" />
     </ItemGroup>
 </Project>

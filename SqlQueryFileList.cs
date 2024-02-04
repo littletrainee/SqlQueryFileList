@@ -13,12 +13,15 @@ namespace SqlQueryFileList
         private List<ColumnEnum> ColumnEnums { get; set; } = new List<ColumnEnum>();
         private ColumnEnum OrderBy { get; set; } = ColumnEnum.NAME;
         private bool IsDescending { get; set; }
-        private bool IsSelectPlace { get; set; } = true;
+        private Block Block { get; set; }
         private List<FileInfo> FileInfoList { get; set; }
         private int NameLength { get; set; }
         private int SizeLength { get; set; }
         private int FileLastWriteTimeLength { get; set; }
         private int ExtensionLength { get; set; }
+        private ColumnEnum LikeColumn { get; set; }
+        private Like Like { get; set; }
+        private string LikeString { get; set; }
         public SqlQueryFileList(string[] args)
         {
             //! 串聯傳入的參數並以空格區隔
@@ -33,9 +36,23 @@ namespace SqlQueryFileList
 
             this.ParseQueryStatement();
             this.FileInfoList = Directory.GetFiles(this.TargetDirectory).ToList().Select(x => new FileInfo(x)).ToList();
+            this.VagueSearch();
             this.SetOrder();
             this.SetColumnWidth();
             this.Print();
+        }
+        private void VagueSearch()
+        {
+            if (this.Like != Like.NONE)
+            {
+                this.FileInfoList = this.FileInfoList.Where(
+x => x.Name.Where((_, index) =>
+this.LikeString.SkipWhile((p, pIndex) =>
+    p == '%' || (pIndex + index < x.Name.Length && p == x.Name[index + pIndex])).All(p => p == '%')).Any()
+|| this.LikeString.StartsWith('%') && x.Name.EndsWith(this.LikeString.Substring(1))
+|| this.LikeString.EndsWith('%') && x.Name.StartsWith(this.LikeString.Substring(0, this.LikeString.Length - 1))
+                          ).Select(x => x).ToList();
+            }
         }
 
         private void SetColumnWidth()
@@ -131,60 +148,114 @@ namespace SqlQueryFileList
 
         private void ParseQueryStatement()
         {
-            //TODO LIKE的部分
             for (int i = 0; i < this.QueryStatement.Count; i++)
             {
-                if (this.QueryStatement[i] == ".")
+            Re:
+                switch (this.Block)
                 {
-                    this.TargetDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                }
-                else if (this.QueryStatement[i].Equals("NAME", StringComparison.CurrentCultureIgnoreCase) && this.IsSelectPlace)
-                {
-                    this.ColumnEnums.Add(ColumnEnum.NAME);
-                }
-                else if (this.QueryStatement[i].Equals("SIZE", StringComparison.CurrentCultureIgnoreCase) && this.IsSelectPlace)
-                {
-                    this.ColumnEnums.Add(ColumnEnum.SIZE);
-                }
-                else if (this.QueryStatement[i].Equals("FILE_LAST_WRITE_TIME", StringComparison.CurrentCultureIgnoreCase) && this.IsSelectPlace)
-                {
-                    this.ColumnEnums.Add(ColumnEnum.FILE_LAST_WRITE_TIME);
-                }
-                else if (this.QueryStatement[i].Equals("EXTENSION", StringComparison.CurrentCultureIgnoreCase) && this.IsSelectPlace)
-                {
-                    this.ColumnEnums.Add(ColumnEnum.EXTENSION);
-                }
-                else if (this.QueryStatement[i].Equals("FROM", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    this.IsSelectPlace = false;
-                }
-                else if (this.QueryStatement[i].Equals("ORDER", StringComparison.CurrentCultureIgnoreCase)
-                      && this.QueryStatement[i + 1].Equals("BY", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    if (this.QueryStatement[i + 2].Equals("NAME", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        this.OrderBy = ColumnEnum.NAME;
-                    }
-                    else if (this.QueryStatement[i + 2].Equals("SIZE", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        this.OrderBy = ColumnEnum.SIZE;
-                    }
-                    else if (this.QueryStatement[i + 2].Equals("FILE_LAST_WRITE_TIME", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        this.OrderBy = ColumnEnum.FILE_LAST_WRITE_TIME;
-                    }
-                    else if (this.QueryStatement[i + 2].Equals("EXTENSION", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        this.OrderBy = ColumnEnum.EXTENSION;
-                    }
-                }
-                else if (this.QueryStatement[i].Equals("DESC", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    this.IsDescending = true;
-                }
-                else if (this.QueryStatement[i].Equals("ASC", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    this.IsDescending = false;
+                    case Block.SELECT:
+                        if (this.QueryStatement[i].Equals("NAME", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.ColumnEnums.Add(ColumnEnum.NAME);
+                        }
+                        else if (this.QueryStatement[i].Equals("SIZE", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.ColumnEnums.Add(ColumnEnum.SIZE);
+                        }
+                        else if (this.QueryStatement[i].Equals("FILE_LAST_WRITE_TIME", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.ColumnEnums.Add(ColumnEnum.FILE_LAST_WRITE_TIME);
+                        }
+                        else if (this.QueryStatement[i].Equals("EXTENSION", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.ColumnEnums.Add(ColumnEnum.EXTENSION);
+                        }
+                        else if (this.QueryStatement[i].Equals("FROM", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.Block++;
+                            goto Re;
+                        }
+                        break;
+                    case Block.FROM:
+                        if (this.QueryStatement[i] == ".")
+                        {
+                            this.TargetDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        }
+                        else if (this.QueryStatement[i].Equals("WHERE", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.Block++;
+                            goto Re;
+                        }
+                        else if (this.QueryStatement[i].Equals("ORDER", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.Block += 2;
+                            goto Re;
+                        }
+                        break;
+                    case Block.WHERE:
+                        if (this.QueryStatement[i].Equals("WHERE", StringComparison.CurrentCultureIgnoreCase))
+                        {
+
+                            if (this.QueryStatement[i + 2].Equals("LIKE", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                string targetString = this.QueryStatement[i + 3].Replace("'", string.Empty);
+
+                                this.Like = Like.START;
+                                this.LikeString = targetString;
+                                if (this.QueryStatement[i + 1].Equals("NAME", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    this.LikeColumn = ColumnEnum.NAME;
+                                }
+                                else if (this.QueryStatement[i + 1].Equals("SIZE", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    this.LikeColumn = ColumnEnum.SIZE;
+                                }
+                                else if (this.QueryStatement[i + 1].Equals("FILE_LAST+WRITE_TIME", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    this.LikeColumn = ColumnEnum.FILE_LAST_WRITE_TIME;
+                                }
+                                else if (this.QueryStatement[i + 1].Equals("EXTENSION", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    this.LikeColumn = ColumnEnum.EXTENSION;
+                                }
+                            }
+                        }
+                        else if (this.QueryStatement[i].Equals("ORDER", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.Block++;
+                            goto Re;
+                        }
+                        break;
+                    case Block.ORDER:
+                        if (this.QueryStatement[i].Equals("ORDER", StringComparison.CurrentCultureIgnoreCase)
+                              && this.QueryStatement[i + 1].Equals("BY", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            if (this.QueryStatement[i + 2].Equals("NAME", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                this.OrderBy = ColumnEnum.NAME;
+                            }
+                            else if (this.QueryStatement[i + 2].Equals("SIZE", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                this.OrderBy = ColumnEnum.SIZE;
+                            }
+                            else if (this.QueryStatement[i + 2].Equals("FILE_LAST_WRITE_TIME", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                this.OrderBy = ColumnEnum.FILE_LAST_WRITE_TIME;
+                            }
+                            else if (this.QueryStatement[i + 2].Equals("EXTENSION", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                this.OrderBy = ColumnEnum.EXTENSION;
+                            }
+                        }
+                        else if (this.QueryStatement[i].Equals("DESC", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.IsDescending = true;
+                        }
+                        else if (this.QueryStatement[i].Equals("ASC", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            this.IsDescending = false;
+                        }
+                        break;
                 }
             }
         }

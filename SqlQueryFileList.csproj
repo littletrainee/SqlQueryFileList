@@ -7,7 +7,7 @@
         <Nullable>disable</Nullable>
     </PropertyGroup>
     <PropertyGroup>
-        <NoWarn>CS8600;IDE0028;IDE0305;CA1861;IDE0003</NoWarn>
+        <NoWarn>CS8600;IDE0028;IDE0305;CA1861;IDE0003;IDE0300</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="Program.cs" />
@@ -15,5 +15,7 @@
         <Content Include=".vscode\launch.json" />
         <Content Include="SqlQueryFileList.cs" />
         <Content Include="ColumnEnum.cs" />
+        <Content Include="Block.cs" />
+        <Content Include="Like.cs" />
     </ItemGroup>
 </Project>

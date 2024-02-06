@@ -189,7 +189,6 @@ x => x.Name.Where((_, index) =>
                             {
                                 string location = Assembly.GetExecutingAssembly().Location;
                                 this.TargetDirectory = Path.GetDirectoryName(location);
-                                // this.TargetDirectory = Path.GetDirectoryName(System.AppContext.BaseDirectory);
                                 Console.WriteLine(this.TargetDirectory);
                             }
                         }

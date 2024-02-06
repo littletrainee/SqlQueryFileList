@@ -12,3 +12,16 @@ D:\Document\SqlQueryFileList\obj\Debug\net8.0\refint\SqlQueryFileList.dll
 D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.pdb
 D:\Document\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.genruntimeconfig.cache
 D:\Document\SqlQueryFileList\obj\Debug\net8.0\ref\SqlQueryFileList.dll
+H:\C#Git\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.exe
+H:\C#Git\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.deps.json
+H:\C#Git\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.runtimeconfig.json
+H:\C#Git\SqlQueryFileList\bin\Debug\net8.0\SqlQueryFileList.dll
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.GeneratedMSBuildEditorConfig.editorconfig
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.AssemblyInfoInputs.cache
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.AssemblyInfo.cs
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.csproj.CoreCompileInputs.cache
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.sourcelink.json
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.dll
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\refint\SqlQueryFileList.dll
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\SqlQueryFileList.genruntimeconfig.cache
+H:\C#Git\SqlQueryFileList\obj\Debug\net8.0\ref\SqlQueryFileList.dll
